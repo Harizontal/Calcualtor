@@ -19,19 +19,16 @@ namespace CalculatorApp
 
         public double Add(double a, double b)
         {
-            LogOperation($"Add: {a} + {b}");
             return a + b;
         }
 
         public double Subtract(double a, double b)
         {
-            LogOperation($"Subtract: {a} - {b}");
             return a - b;
         }
 
         public double Multiply(double a, double b)
         {
-            LogOperation($"Multiply: {a} * {b}");
             return a * b;
         }
 
@@ -40,14 +37,12 @@ namespace CalculatorApp
             if (b == 0)
                 throw new DivideByZeroException("Деление на ноль не допускается");
 
-            LogOperation($"Divide: {a} / {b}");
             return a / b;
         }
 
         private void LogOperation(string operation)
         {
             if (logOperations && logger != null)
-                logger.Write($"Метод {operation}");
         }
 
         public int GeneratePositive() => random.Next(0, 1001);
@@ -60,7 +55,7 @@ namespace CalculatorApp
                 value = random.Next(0, 1001);
                 if (value % 2 == 0)
                     break;
-            }
+    }
             return value;
         }
         public int GenerateOdd()
@@ -191,25 +186,6 @@ namespace CalculatorApp
                 break;
                 case ConsoleKey.D2:
                     FindElements findElements = new FindElements();
-                    double[] array = new double[10];
-                    Console.WriteLine("\nВведите пошагово 10 элементов массива:");
-                    for (int i = 0; i < array.Length; i++)
-                    {
-                        while (true)
-                        {
-                            try
-                            {
-                                array[i] = double.Parse(Console.ReadLine());
-                                break;
-
-                            }
-                            catch(Exception e)
-                            {
-                                Console.WriteLine(e.Message);
-                            }
-
-                        }
-                    }
                     double maxElement = findElements.FindMaxElement(array);
                     double minPositiveElement = findElements.FindMinPositiveElement(array);
                     double negativeElement = findElements.FindNegativeElement(array);
@@ -261,16 +237,15 @@ namespace CalculatorApp
                     }
                     else
                     {
-                        Console.WriteLine("Введите первое число:");
-                        a = double.Parse(Console.ReadLine());
+                    Console.WriteLine("Введите первое число:");
+                    a = double.Parse(Console.ReadLine());
 
-                        Console.WriteLine("Введите второе число:");
-                        b = double.Parse(Console.ReadLine());
+                    Console.WriteLine("Введите второе число:");
+                    b = double.Parse(Console.ReadLine());
                     }
                     
 
                     Console.WriteLine("Выберите операцию (+, -, *, /):");
-                    char operation = char.Parse(Console.ReadLine());
 
                     double result;
                     switch (operation)
