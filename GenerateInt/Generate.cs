@@ -47,7 +47,18 @@ namespace GenerateInt
                     return GenerateOdd();
                 default:
                     throw new ArgumentException("Неверный тип числа");
+
             }
         }
     }
+
+    public static class Extention
+    {
+        public static int GetRandom(this int value)
+        {
+            return 10;
+
+         }
+    }
+
 }
