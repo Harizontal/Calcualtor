@@ -2,155 +2,17 @@
 using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Calculator_library;
+using FindElements;
+using GenerateInt;
 
 namespace CalculatorApp
 {
-    public class Calculator
-    {
-        private readonly ILogger logger;
-        private readonly bool logOperations;
-        private Random random = new Random();
-
-        public Calculator(ILogger logger = null, bool logOperations = true)
-        {
-            this.logger = logger;
-            this.logOperations = logOperations;
-        }
-
-        public double Add(double a, double b)
-        {
-            LogOperation($"Add: {a} + {b}");
-            return a + b;
-        }
-
-        public double Subtract(double a, double b)
-        {
-            LogOperation($"Subtract: {a} - {b}");
-            return a - b;
-        }
-
-        public double Multiply(double a, double b)
-        {
-            LogOperation($"Multiply: {a} * {b}");
-            return a * b;
-        }
-
-        public double Divide(double a, double b)
-        {
-            if (b == 0)
-                throw new DivideByZeroException("Деление на ноль не допускается");
-
-            LogOperation($"Divide: {a} / {b}");
-            return a / b;
-        }
-
-        private void LogOperation(string operation)
-        {
-            if (logOperations && logger != null)
-                logger.Write($"Метод {operation}");
-        }
-
-        public int GeneratePositive() => random.Next(0, 1001);
-        public int GenerateNegative() =>  random.Next(-1001, 0);
-        public int GenerateEven()
-        {
-            int value;
-            while (true)
-            {
-                value = random.Next(0, 1001);
-                if (value % 2 == 0)
-                    break;
-            }
-            return value;
-        }
-        public int GenerateOdd()
-        {
-            int value;
-            while (true)
-            {
-                value = random.Next(0, 1001);
-                if (value % 2 == 1)
-                    break;
-            }
-            return value;
-        }
-
-    }
-    public class FindElements
-    {
-
-        public double FindMaxElement(double[] array)
-        {
-            if (array.Length == 0)
-            {
-                throw new ArgumentException("Массив пуст");
-            }
-
-            double maxElement = double.MinValue;
-            foreach (double element in array)
-            {
-                if (element > maxElement)
-                {
-                    maxElement = element;
-                }
-            }
-            return maxElement;
-        }
-
-        public double FindMinPositiveElement(double[] array)
-        {
-            if (array.Length == 0 || !array.Any(x => x > 0))
-            {
-                throw new ArgumentException("Массив пуст или не содержит положительных элементов");
-            }
-
-            double minPositiveElement = double.MaxValue;
-            foreach (double element in array)
-            {
-                if (element > 0 && element < minPositiveElement)
-                {
-                    minPositiveElement = element;
-                }
-            }
-            return minPositiveElement;
-        }
-
-        public double FindNegativeElement(double[] array)
-        {
-            if (array.Length == 0 || !array.Any(x => x < 0))
-            {
-                throw new ArgumentException("Массив пуст или не содержит отрицательных элементов");
-            }
-
-            double negativeElement = double.MaxValue;
-            foreach (double element in array)
-            {
-                if (element < 0 && element < negativeElement)
-                {
-                    negativeElement = element;
-                }
-            }
-            return negativeElement;
-        }
-    }
-
-    public interface ILogger
-    {
-        void Write(string message);
-    }
-
-    public class ConsoleLogger : ILogger
-    {
-        public void Write(string message)
-        {
-            Console.WriteLine(message);
-        }
-    }
-
     class Program
     {
         static void Main(string[] args)
         {
+            
             Console.WriteLine("Выберите режим:");
             Console.WriteLine("1. Кальулятор");
             Console.WriteLine("2. Поиск значении в массиве");
@@ -189,7 +51,7 @@ namespace CalculatorApp
                     }
                 break;
                 case ConsoleKey.D2:
-                    FindElements findElements = new FindElements();
+                    FindElement findElement = new FindElement();
                     double[] array = new double[10];
                     Console.WriteLine("\nВведите пошагово 10 элементов массива:");
                     for (int i = 0; i < array.Length; i++)
@@ -209,53 +71,33 @@ namespace CalculatorApp
 
                         }
                     }
-                    double maxElement = findElements.FindMaxElement(array);
-                    double minPositiveElement = findElements.FindMinPositiveElement(array);
-                    double negativeElement = findElements.FindNegativeElement(array);
-                    Console.WriteLine($"\nМаксимальный элемент: {maxElement}");
-                    Console.WriteLine($"Минимальный положительный элемент: {minPositiveElement}");
-                    Console.WriteLine($"Минимальный отрицательный элемент: {negativeElement}");
+                    Console.WriteLine($"\nМаксимальный элемент: {findElement.FindMaxElement(array)}");
+                    Console.WriteLine($"Минимальный положительный элемент: {findElement.FindMinPositiveElement(array)}");
+                    Console.WriteLine($"Минимальный отрицательный элемент: {findElement.FindNegativeElement(array)}");
                     Console.ReadKey();
                 break;
-            }
-        }
-
-        static double GenerateNumber(int type)
-        {
-            Calculator calculator = new Calculator();
-            switch (type)
-            {
-                case 1:
-                    return calculator.GeneratePositive();
-                case 2:
-                    return calculator.GenerateNegative();
-                case 3:
-                    return calculator.GenerateEven();
-                case 4:
-                    return calculator.GenerateOdd();
-                default:
-                    throw new ArgumentException("Неверный тип числа");
             }
         }
         private static void StepByStepMode(Calculator calculator)
         {
             double a, b;
             Console.WriteLine("Сгенерировать числа? (y/n):");
-            bool generate = Console.ReadLine().ToLower() == "y";
+            Generate generate = new Generate();
+            bool checkGenerate = Console.ReadLine().ToLower() == "y";
             while (true)
             {
                 try
                 {
-                    if (generate)
+                    if (checkGenerate)
                     {
                         int typeGenerate;
                         Console.WriteLine("Для первого числа: \n 1.Положительный \n 2. Отрицательный \n 3. Четный \n 4. Нечетный");
                         typeGenerate = int.Parse(Console.ReadLine());
-                        a = GenerateNumber(typeGenerate);
+                        a = generate.GenerateNumber(typeGenerate);
 
                         Console.WriteLine("Для второго числа: \n 1.Положительный \n 2. Отрицательный \n 3. Четный \n 4. Нечетный");
                         typeGenerate = int.Parse(Console.ReadLine());
-                        b = GenerateNumber(typeGenerate);
+                        b = generate.GenerateNumber(typeGenerate);
 
                     }
                     else
@@ -308,6 +150,7 @@ namespace CalculatorApp
 
         private static void ExpressionMode(Calculator calculator)
         {
+            calculator.LogOperation("ExpressionMode");
             while (true)
             {
                 try
